@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>历史学名词解释复习</title>
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --card-bg: #fffef7;
+    --card-border: #e0d6c5;
+    --text: #3d2b1f;
+    --text-secondary: #6b5a4e;
+    --text-muted: #9b8b7a;
+    --accent: #8b5e3c;
+    --accent-hover: #6b3a2a;
+    --accent-light: #c4a882;
+    --progress-bg: #e5ddd0;
+    --shadow: 0 2px 16px rgba(61, 43, 31, 0.10);
+    --shadow-lg: 0 8px 32px rgba(61, 43, 31, 0.12);
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(139, 94, 60, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(139, 94, 60, 0.03) 0%, transparent 50%);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  /* ── Progress bar (top of page) ── */
+  .progress-bar-outer {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--progress-bg);
+    z-index: 10;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── Container ── */
+  .container {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+  }
+  .header h1 {
+    font-family: Georgia, "Times New Roman", "Noto Serif SC", "Source Han Serif SC", "Songti SC", 宋体, serif;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .header .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .beta-note {
+    font-size: 0.78rem;
+    color: var(--accent-light);
+    margin-top: 6px;
+    padding: 4px 14px;
+    background: rgba(139, 94, 60, 0.07);
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  /* ── Card ── */
+  .card {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: clamp(24px, 5vw, 40px);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .card.reviewing::before { opacity: 1; }
+  .card.clickable { cursor: pointer; }
+  .card.clickable:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  /* ── Welcome ── */
+  .card-welcome { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .welcome-icon { font-size: 3rem; line-height: 1; }
+  .card-welcome h2 {
+    font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+  .card-welcome p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .card-welcome .count-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--bg);
+    padding: 4px 14px;
+    border-radius: 20px;
+  }
+
+  /* ── Review ── */
+  .card-review { display: none; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+  .card-review.active { display: flex; }
+
+  .term-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-light);
+    font-weight: 600;
+  }
+  .term-text {
+    font-family: Georgia, "Times New Roman", "Noto Serif SC", "Source Han Serif SC", "Songti SC", 宋体, serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    word-break: break-word;
+    transition: opacity 0.2s ease;
+  }
+  .term-text.fading { opacity: 0; }
+
+  .explanation-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin 0.5s ease, opacity 0.35s ease;
+    width: 100%;
+  }
+  .explanation-wrapper.open {
+    max-height: 600px;
+    margin-top: 8px;
+    opacity: 1;
+  }
+  .explanation-text {
+    text-align: left;
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    line-height: 1.9;
+    color: var(--text-secondary);
+    padding: 16px 20px;
+    background: rgba(139, 94, 60, 0.04);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-light);
+  }
+
+  .reveal-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: opacity 0.3s ease;
+  }
+
+  /* ── Complete ── */
+  .card-complete { display: none; flex-direction: column; align-items: center; gap: 12px; }
+  .card-complete.active { display: flex; }
+  .complete-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(90, 125, 74, 0.12);
+    color: #5a7d4a;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+  }
+  .card-complete h2 { font-size: 1.3rem; color: var(--text); }
+  .card-complete p { color: var(--text-secondary); font-size: 0.95rem; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(139, 94, 60, 0.25);
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+  }
+  .btn-outline:hover { background: rgba(139, 94, 60, 0.06); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+  }
+  .btn-ghost:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+
+  .btn-start {
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    margin-top: 8px;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .progress-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* ── Footer / shortcuts hint ── */
+  .shortcuts {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .shortcuts.visible { opacity: 1; }
+  .shortcuts kbd {
+    display: inline-block;
+    padding: 1px 7px;
+    font-size: 0.75rem;
+    font-family: inherit;
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  .btn-manage {
+    font-size: 0.82rem;
+    margin-top: 2px;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(61, 43, 31, 0.4);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .modal-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .modal-close {
+    background: none; border: none;
+    font-size: 1.5rem; color: var(--text-muted); cursor: pointer;
+    padding: 0 4px; line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .add-form {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .add-form label {
+    font-size: 0.9rem; font-weight: 600; color: var(--text);
+  }
+  .add-form input, .add-form textarea {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .add-form input:focus, .add-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.1);
+  }
+  .form-msg { font-size: 0.82rem; min-height: 1.2em; }
+  .form-msg.success { color: #5a7d4a; }
+  .form-msg.error { color: #c44; }
+
+  .user-terms h4 {
+    font-size: 0.9rem; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .count-badge {
+    background: var(--accent); color: #fff;
+    font-size: 0.72rem; padding: 1px 8px; border-radius: 10px;
+    font-weight: 600;
+  }
+  .term-list {
+    display: flex; flex-direction: column; gap: 6px;
+    max-height: 200px; overflow-y: auto;
+  }
+  .term-list .empty-hint {
+    color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 16px 0;
+  }
+  .term-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(139, 94, 60, 0.04);
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+  .term-item .term-name { font-weight: 600; color: var(--text); }
+  .term-item .term-preview {
+    color: var(--text-muted); font-size: 0.8rem;
+    max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .term-item .btn-del {
+    background: none; border: none;
+    color: var(--text-muted); cursor: pointer;
+    font-size: 1.1rem; padding: 2px 6px; border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  .term-item .btn-del:hover { color: #c44; background: rgba(204, 68, 68, 0.08); }
+
+  .data-actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid var(--card-border);
+  }
+  .btn-sm { padding: 7px 14px; font-size: 0.82rem; }
+  .btn-danger { color: #c44 !important; }
+  .btn-danger:hover { background: rgba(204, 68, 68, 0.06) !important; color: #a33 !important; }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    body { padding: 12px; justify-content: flex-start; padding-top: 40px; }
+    .card { padding: 24px 20px; min-height: 240px; }
+    .controls { gap: 8px; }
+    .btn { padding: 10px 18px; font-size: 0.9rem; }
+    .btn-start { padding: 14px 32px; font-size: 1rem; }
+    .shortcuts { gap: 8px; font-size: 0.72rem; }
+    .modal { max-width: 100%; max-height: 90vh; border-radius: 12px 12px 0 0; }
+    .modal-overlay { align-items: flex-end; padding: 0; }
+    .modal-body { padding: 16px; }
+    .term-item .term-preview { display: none; }
+    .data-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+
+<div class="container">
+
+  <header class="header">
+    <h1>名词解释复习</h1>
+    <p class="subtitle">历史学随机自测工具</p>
+    <p class="beta-note">测试版 · 词库范围：三国至清的中国古代土地与赋役制度</p>
+    <button class="btn btn-ghost btn-manage" id="btnOpenManage">&#9881; 管理词库</button>
+  </header>
+
+  <div class="card" id="card">
+    <!-- 欢迎状态 -->
+    <div class="card-welcome" id="welcomePanel">
+      <div class="welcome-icon">📜</div>
+      <h2>准备好了吗？</h2>
+      <p>随机抽取名词，自测记忆效果。<br>点击卡片即可查看解释。</p>
+      <div class="count-info" id="countInfo"></div>
+      <button class="btn btn-primary btn-start" id="btnStart">开始复习</button>
+    </div>
+
+    <!-- 复习状态 -->
+    <div class="card-review" id="reviewPanel" style="display:none">
+      <div class="term-label">名词解释</div>
+      <div class="term-text" id="termEl"></div>
+      <div class="explanation-wrapper" id="explanationWrapper">
+        <div class="explanation-text" id="explanationEl"></div>
+      </div>
+      <div class="reveal-hint" id="revealHint">点击卡片或按空格键显示答案</div>
+    </div>
+
+    <!-- 完成状态 -->
+    <div class="card-complete" id="completePanel" style="display:none">
+      <div class="complete-icon">&#10003;</div>
+      <h2>本轮复习完毕！</h2>
+      <p id="completeText"></p>
+      <button class="btn btn-primary" id="btnReset2">重新开始</button>
+    </div>
+  </div>
+
+  <div class="controls" id="controls" style="display:none;">
+    <button class="btn btn-outline" id="btnPrev" title="上一个">&#8592; 上一个</button>
+    <button class="btn btn-primary" id="btnReveal">显示答案</button>
+    <button class="btn btn-outline" id="btnNext" title="下一个">下一个 &#8594;</button>
+  </div>
+
+  <div class="progress-text" id="progressText"></div>
+
+  <button class="btn btn-ghost" id="btnReset" style="display:none;">&#8634; 重新开始</button>
+
+  <div class="shortcuts" id="shortcuts">
+    <span><kbd>空格</kbd> 显示/收起</span>
+    <span><kbd>&rarr;</kbd> 下一个</span>
+    <span><kbd>&larr;</kbd> 上一个</span>
+  </div>
+
+  <!-- 管理词库模态框 -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>管理词库</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="add-form">
+          <label>添加新名词</label>
+          <input type="text" id="inputTerm" placeholder="名词名称，如：安史之乱">
+          <textarea id="inputExplanation" placeholder="解释内容……" rows="4"></textarea>
+          <button class="btn btn-primary" id="btnAddTerm">添加到词库</button>
+          <p class="form-msg" id="formMsg"></p>
+        </div>
+        <div class="user-terms" id="userTermsSection">
+          <h4>我的名词 <span class="count-badge" id="userTermBadge">0</span></h4>
+          <div class="term-list" id="termList">
+            <p class="empty-hint">暂无自定义名词，在上方添加或从文件导入。</p>
+          </div>
+        </div>
+        <div class="data-actions">
+          <button class="btn btn-outline btn-sm" id="btnExport">导出全部 (JSON)</button>
+          <button class="btn btn-outline btn-sm" id="btnImport">从文件导入</button>
+          <input type="file" id="importFile" accept=".json" style="display:none;">
+          <button class="btn btn-ghost btn-sm btn-danger" id="btnClearUser">清空我的名词</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var builtinTerms = [
+  {
+    term: "屯田制",
+    explanation: "屯田制是东汉末年军阀混战背景下，曹操在196年（建安元年）采纳枣祗等人建议推行的一项寓兵于农的制度。政府招募流民或派驻士兵在许昌等地的荒地上开垦耕种，由国家提供耕牛、农具和种子，收获后按比例分成：使用官牛的农户，收成官六民四；使用私牛的则官民对半平分。屯田分为军屯（由士兵及其家属耕种）和民屯（由招募的流民耕种）两种。它在战乱频仍、粮食奇缺的年代里有效解决了军粮供应和流民安置两大难题，恢复了北方农业生产，为曹魏积蓄了雄厚的经济军事实力。"
+  },
+  {
+    term: "占田制",
+    explanation: "占田制是西晋灭吴统一全国后，于太康元年（280年）颁布的土地法令。它规定普通百姓男子可占田70亩、女子30亩，同时又规定了课田（纳税田）的最低限额：丁男课田50亩、丁女20亩。对于官员则按品级设定占田上限，一品官可占田50顷，每降一品递减5顷，至九品为10顷。占田制的本意是以法律形式限制土地兼并的规模、保障国家的赋税来源，但在门阀士族势力如日中天的西晋，这一制度过于理想化，并未触动大族已占有的庞大地产，实际执行效果十分有限。"
+  },
+  {
+    term: "均田制",
+    explanation: "均田制是中国古代推行时间最长、影响最为深远的土地制度之一，从北魏太和九年（485年）孝文帝颁布均田令开始，一直延续到唐中叶（约780年），前后近三百年。其核心做法是将国家掌握的无主荒地按人口统一分配：丁男授露田80亩、桑田20亩，妇女授露田40亩，露田在受田者死后归还官府，桑田则可世代相传。唐代调整为丁男授田100亩，其中80亩为口分田（须还官）、20亩为永业田（可传子孙）。均田制成功地将土地与劳动力重新结合，使大量流亡农民回归农业生产，增加了国家编户和赋税收入，为隋唐盛世的到来奠定了经济根基。唐中叶以后，随着土地兼并愈演愈烈和户籍管理日趋混乱，均田制最终瓦解。"
+  },
+  {
+    term: "租调制",
+    explanation: "租调制是北魏至隋代与均田制相配套的赋税制度。北魏规定，受田农户每对夫妇每年需向国家缴纳粟二石作为「租」、缴纳帛一匹作为「调」。隋朝在此基础上稍作调整，每对夫妇纳粟三石，调绢一匹外加绵三两。未婚的丁男则按半数征收。租调制的特点是按户而非按人征收，以均田制下的小农家庭为基本征收单位，将赋税项目简化为租、调两项，避免了名目繁多的杂税扰民。它使国家获得了稳定可预期的财政收入，减轻了农户负担，为隋朝统一全国提供了坚实的物质保障。"
+  },
+  {
+    term: "租庸调制",
+    explanation: "租庸调制是唐代在均田制基础上建立的一套完整的赋役制度，自唐初一直实行到780年两税法改革为止。依此制度，每丁每年纳粟二石为「租」，纳绢二丈（或布二丈五尺）加绵三两（或麻三斤）为「调」，每年服徭役二十天；若不愿亲身服役，可以每日折绢三尺的标准纳绢代役，这便是「庸」。此外还规定，如果国家额外加役十五天可免调，加役三十天则租调全免。「庸」制的确立是一大创举——农民可以用实物代替亲身劳役，人身束缚大为减轻，有利于农业生产和社会稳定。但租庸调制以均田制的有效运行为前提，唐中叶均田制瓦解后，它也随之崩溃。"
+  },
+  {
+    term: "两税法",
+    explanation: "780年（建中元年），唐德宗采纳宰相杨炎的建议，推行两税法以取代已崩溃的租庸调制。新法废除了此前的各项杂税，统一按每户的资产多少和田亩数量来确定税额，分夏秋两季征收，故称「两税」。它不分主户与客户，一律在现居地纳税；不分丁男与中男，一律按贫富等级征税。税额虽以铜钱计算，但实际征收时允许以实物折纳。两税法是中国古代赋税制度的一次革命性变革：征税标准从此由「人丁」转向「资产和土地」，简化了税制、扩大了纳税面，在短期内大幅增加了中央财政收入，其后历代的赋税改革都沿着这一方向演进。"
+  },
+  {
+    term: "检籍与括户",
+    explanation: "检籍和括户是南北朝至隋唐时期国家整顿户籍、搜括隐匿人口的两种行政手段。检籍侧重于对已有户籍的审核清理，纠正其中的诈冒伪籍，南朝的「土断」政策即属此类，旨在将侨居流民就地编入户籍；括户则侧重于搜检那些完全脱离国家户籍的逃亡隐匿人口，将其重新纳入编户体系。隋朝的「大索貌阅」是括户的典型——官府按户籍所载年龄逐一核对本人的相貌体态以防虚报；唐代宇文融主持的括户行动则一举搜得逃户八十余万。这些措施有效扩大了国家的赋役基础，是维护均田制和赋役制度正常运转的重要配套手段。"
+  },
+  {
+    term: "经界法",
+    explanation: "经界法是南宋绍兴十二年（1142年）由两浙转运副使李椿年主持推行的一项土地清查制度。所谓「经界」，即划定田地的边界四至。官府对全国耕地进行系统丈量和登记，为每块田地绘制图册（砧基簿），详细记录其面积、四至、等级和业主信息，以此作为征税的权威依据。北宋末年以来，战乱频仍，土地簿籍严重混乱，豪强趁机隐田漏税，国家财政收入锐减。经界法在一定程度上纠正了这一积弊，增加了南宋朝廷的田赋收入。但由于它直接触及官僚地主的切身利益，推行过程中遭到巨大阻力，最终未能全面、持久地贯彻实施。"
+  },
+  {
+    term: "募役法",
+    explanation: "募役法（又称免役法）是北宋熙宁四年（1071年）王安石变法中推出的重要改革措施。此前宋代实行差役法，由民户按户等轮流承担各种职务性徭役，负担沉重，许多人因此破产。募役法废除了这一旧制，改由官府出钱招募愿意服役的人来充当差役，所需费用则通过向全体民户征收「免役钱」来筹措——原应服役的农户按户等高低缴纳，原本免役的官户、坊郭户等也须缴纳半额的「助役钱」。这样一来，广大农民从繁重且不可预测的差役中得以解脱，可以安心从事农业生产和商业经营，促进了社会分工。但免役钱的征收对部分农户形成了新的货币负担，因而遭到了保守派的强烈反对。"
+  },
+  {
+    term: "方田均税法",
+    explanation: "方田均税法是王安石变法中的又一项理财措施，于熙宁五年（1072年）开始推行。它以东西南北各一千步（约合41顷66亩）为「一方」的基本丈量单位，对全国耕地进行重新测量，按地形、土质和肥沃程度将田地分为五等，各等分别确定税额，以期做到赋税负担与实际土地状况相匹配。这一改革查出了大量此前被官僚地主隐瞒的土地，增加了国家的田赋收入，也在一定程度上均平了赋税负担。但由于丈量技术所限和既得利益集团的抵制，方田均税法仅在京东、河北等部分路州得到推行，王安石罢相后便逐渐废弛。"
+  },
+  {
+    term: "折变与支移",
+    explanation: "折变与支移是宋代赋税征收中的两种加重农民负担的附加手段。「折变」是将应缴纳的实物赋税按官府规定折算为其他物品或货币来征收，例如把绢帛折成钱币、把粮食折成银两，而官府的折算价格常远低于市场价；「支移」则要求纳税人将应纳物品自行运送到远离本州本县的目的地，超出常规范围的运费全部由纳税人自行承担。两者名义上不增加正税税额，实际却大大加重了民众负担，成为宋代底层百姓苦不堪言的额外剥削。折变与支移的盛行，也折射出北宋中后期赋税制度日趋繁杂和掠夺性增强的趋势。"
+  },
+  {
+    term: "一条鞭法",
+    explanation: "一条鞭法是明代万历九年（1581年）内阁首辅张居正在全国推行的赋役改革，得名于将此前名目繁杂的各种赋税和徭役「总括一县之赋役，量地计丁，一概征银」。具体做法是：将各州县的赋税和徭役合并为一个总额，按田亩数量分摊到各户，全部折算成银两缴纳，取消百姓亲身赴役的义务，赋税征收和徭役征发统一由官府用这笔银子来安排。这一改革使赋役合一、以银代役，大大减轻了农民的人身依附关系，促进了商品经济和白银货币的流通，短期内显著增加了国家财政收入。然而它触动了众多胥吏和地主豪绅的既得利益，张居正去世后部分条款遭到废弃。"
+  },
+  {
+    term: "鱼鳞图册",
+    explanation: "鱼鳞图册是明太祖朱元璋于洪武二十年（1387年）下令编纂的全国土地登记档案，因其描绘的田块图形层层叠叠、状似鱼鳞排列而得名。朱元璋派出国子监生分赴各州县，逐块丈量全国耕地，为每一块田地单独绘制图页，标明编号、面积、四至边界、业主姓名、佃户、土地类别和等级等详细信息。这是中国古代历史上最系统、最精确的一次土地普查，为后续的赋税征收提供了极为可靠的依据，有效地遏制了豪强地主的隐田漏税行为。鱼鳞图册与同时期编制的黄册互为表里——「人户以籍为定，田土以册为据」——共同构成了明代赋役制度的基石。"
+  },
+  {
+    term: "黄册制度",
+    explanation: "黄册是明代洪武十四年（1381年）开始编制的全国户口总册，因封面使用黄色纸张而得名。它以户为基本单位，详细登记每个家庭成员的姓名、籍贯、年龄、人丁数量以及田宅、资产状况，作为官府征收赋税和征发徭役的根本依据。黄册每十年重新编纂一次，由基层的里甲组织逐级汇总上报至户部。这套制度建立了全国统一且定期更新的户籍管理体系，使得国家能够持续掌握人口和财产的变动情况。黄册与鱼鳞图册相互配合——黄册管「人」、鱼鳞册管「地」，双管齐下，使明代赋役管理达到了前所未有的精确程度，其影响一直延续到近代。"
+  },
+  {
+    term: "里甲制度",
+    explanation: "里甲制度是明代在乡村基层建立的一套行政和赋役管理体系。它以110户编为一「里」，其中丁粮最多的十户轮流担任里长，其余百户均分为十「甲」，每甲十户，各设甲首一人。里长和甲首每年轮换，十年为一个完整周期，负责本里范围内催征钱粮、勾摄公事、编排差役等事务，其实就是国家权力向乡村延伸的最末梢。里甲制度将行政管控与赋役征发紧密捆绑，使政府的触角深入到了每一个村落。但随着时间推移，里甲内部的舞弊和负担不均问题日益严重，明代中后期逐渐被保甲制度所补充和取代。"
+  },
+  {
+    term: "摊丁入亩",
+    explanation: "摊丁入亩是清代最具历史意义的赋税改革，由康熙帝开其端、雍正帝竟其功。康熙五十一年（1712年），清圣祖宣布以当年丁额为准，「盛世滋生人丁，永不加赋」，实际冻结了丁税总额。雍正帝在此基础上进一步推行「摊丁入亩」，将原本按人头征收的丁银全部摊入田赋之中按地亩征收——田地多者多纳、田地少者少纳、无田者不纳丁银。这一改革彻底废除了中国历史上延续两千多年的人头税，使赋税征收完全从「对人征税」转向「对地征税」，是中国赋役史上划时代的转折。广大无地少地的贫苦农民从此免除了丁银负担，人身依附关系大为松弛，直接推动了清代人口的空前增长。"
+  },
+  {
+    term: "耗羡归公",
+    explanation: "耗羡归公是清雍正年间推行的一项财政整肃改革。所谓「耗羡」，是地方官府在征收正额钱粮时以弥补运输和储存损耗为名加征的附加费，长期以来成为地方官中饱私囊的灰色收入来源。雍正帝下令将耗羡统一收归省级藩库管理，从制度上切断地方官私自截留的渠道；同时又从归公的耗羡中提取一笔「养廉银」，按照官员品级和职务繁简予以发放，试图以合法的高薪来换取官员的廉洁，减少贪污腐败。这一改革在一定程度上规范了地方财政、限制了官员的任意加派，但并未从根本上解决清代官僚体制的结构性腐败问题。"
+  },
+  {
+    term: "更名田",
+    explanation: "更名田是清康熙八年（1669年）处理明末土地遗留问题的一项重要政策。明末农民大起义期间，各地藩王和贵族勋戚的大量庄田被起义农民或当地百姓占据耕种，到了清初，这些田地的产权归属成为一个棘手问题。康熙帝下令，将原属明朝藩王的各类庄田「给与原种之人，改为民户」，正式承认现耕农民对这些土地的所有权，只需将其登记为普通民田、照章纳税即可，这些田地被统称为「更名田」。这一举措以法律形式确认了明末农民起义中土地再分配的事实结果，使数百万农民获得了合法的土地产权，有效缓和了清初的社会矛盾，促进了战后农业的恢复。"
+  },
+  {
+    term: "蠲免钱粮",
+    explanation: "蠲免钱粮是历代封建王朝实施的一项救灾和惠民政策，即由皇帝下诏免除特定地区或特定年份百姓应缴纳的部分或全部田赋钱粮，清代将其运用得最为系统和频繁。蠲免通常分为几种：因水旱虫蝗等自然灾害而减免的「灾蠲」、因皇帝登基或寿辰等重大庆典而施恩的「恩蠲」、以及将历年积欠一次性勾销的「积欠蠲免」等。康熙、乾隆年间的大规模蠲免尤其引人注目，次数之多、范围之广均为历代之冠。蠲免在短期内确实减轻了受灾民众的经济压力，是封建国家缓和社会矛盾的重要手段，但在执行中也不可避免地存在地方官吏阳奉阴违、借蠲免之名继续敲诈勒索的现象。"
+  },
+  {
+    term: "职役与差役",
+    explanation: "职役与差役是宋代民众承担的两大类徭役负担，其沉重程度在历代中尤为突出。职役是指按户等高低轮流指派民户担任地方基层的行政管理职务，例如里正和户长负责催征赋税、耆长负责地方治安、壮丁负责抓捕盗贼等；差役则是民众为国家承担的各种劳务性服役，其中最为人所诟病的是「衙前役」——负责官府物资的运输保管，一旦货物损毁短缺，承役者需自掏腰包赔偿，往往导致倾家荡产。这两类徭役是宋代民众身上最沉重的枷锁，也成为王安石变法中改革的核心靶心。"
+  },
+  {
+    term: "杂徭与色役",
+    explanation: "杂徭和色役是隋唐时期除正役（租庸调规定的徭役）之外的两类重要劳役负担。杂徭属于临时性的公共工程劳役，包括兴修水利、建造官舍、铺筑道路等，随时征发，数量不定；色役则是各种名目繁杂的专业性服役，诸如门夫、烽丁（烽火台值守）、驿丁（驿站服务）、渡子（渡口摆渡）、陵户（皇陵守护）等，各类人丁需按指定名目到官府应役，不愿亲赴者也可缴纳一笔资课钱来代役。这些徭役种类之多、负担之重，使唐代民众在正税之外的压榨相当深重，不过纳资代役的逐步普及也反映出唐代徭役体系从纯粹力役向货币化发展的演变趋势。"
+  },
+  {
+    term: "户调制",
+    explanation: "户调制是曹魏建安九年（204年）曹操平定河北后颁布的赋税制度。其核心是按户征收实物税，每户每年缴纳绢二匹、绵二斤，田租则为每亩四升。这一制度改变了汉代按人头征收货币算赋的做法，转向以户为单位的实物税，适应了汉末战乱后货币经济萎缩、实物经济复苏的现实。户调制与田租并行，构成了曹魏赋税体系的两大支柱，后来发展为北魏的租调制，是魏晋南北朝赋税制度演变中的重要一步。"
+  },
+  {
+    term: "土断",
+    "explanation": "土断是东晋南朝时期推行的一项重要户籍政策。永嘉之乱后大量北方流民南渡，东晋政府设置侨州郡县予以安置，但这些侨民长期保留原籍、不纳赋税。土断即是将侨居流民就地编入所在郡县的户籍，按居住地而非原籍征收赋税和征发徭役。东晋桓温和刘裕先后主持过大规模的土断行动，其中刘裕的「义熙土断」效果最为显著。土断增加了国家编户和财政收入，是东晋南朝巩固统治和增强国力的重要手段。"
+  },
+  {
+    term: "青苗法",
+    "explanation": "青苗法是北宋熙宁二年（1069年）王安石变法中最早推出的一项农业贷款政策。每年春夏之交青黄不接时，农民往往被迫以高利息向富户借粮度日。青苗法规定，由官府在播种前和青苗期两次向农民发放贷款，待夏秋收成后连本带息归还，年利二分至三分，远低于民间高利贷。这一制度本意是减轻农民受高利贷盘剥、增加国家财政收入，但在实际执行中地方官吏为完成指标而强行摊派，反而加重了民众负担，成为变法的争议焦点之一。"
+  },
+  {
+    term: "市易法",
+    "explanation": "市易法是王安石变法中于熙宁五年（1072年）推行的一项商业调控政策。官府在京城设立市易务，以平价收购市场上滞销的商品货物，待商贩需要时再以低息赊销给他们，以此平抑物价、防止大商人囤积居奇。商贩可以用产业或金银作抵押，分期还款。市易法的初衷是打击垄断、保护中小商贩、增加国家收入，但在实践中官府垄断了部分商业利润，与民间商人形成竞争关系，被保守派批评为「与民争利」，成为变法中最具争议的措施之一。"
+  },
+  {
+    term: "粮长制",
+    "explanation": "粮长制是明太祖朱元璋于洪武四年（1371年）创设的基层田赋征收制度。以每纳粮一万石左右的地域为一个粮区，由当地田粮最多的富户担任粮长，负责本区田赋的征收、解运和缴纳。粮长直接向官府负责，绕过了州县胥吏的中间环节。这一制度在明初有效保障了国家田赋的足额征收，并给予粮长一定的社会地位和优免待遇作为激励。然而明中后期，粮长的责任日益沉重而优待逐渐丧失，富户纷纷规避，粮长一职落到中下农户身上，成为一项苦差。"
+  },
+  {
+    term: "本色与折色",
+    "explanation": "本色与折色是明代赋税征收中的两种形式。「本色」指农民以粮食、布帛等实物形式缴纳赋税，是历代赋税征收的传统方式；「折色」则是将实物赋税按一定比价折算为白银或铜钱等货币来缴纳。明代正统年间开始，江南等地的田赋逐渐由本色改为折色，一条鞭法改革后折色银成为赋税的主要形式。从本色到折色的演变，反映了明代商品经济的发展和白银货币化的大趋势，使赋税征收更加灵活便利，但也带来了折算中官府压价盘剥的新问题。"
+  },
+  {
+    term: "漕运制度",
+    "explanation": "漕运是指中国古代将东南地区征收的粮食通过水路运往京师及北方边防的制度化运输体系，自秦汉至明清延续两千余年。明代在运河沿线设立漕运总督专司管理，每年额定漕粮约四百万石，由运军沿京杭大运河北运。漕运不仅是京城和边军粮食供应的生命线，也带动了运河沿岸城市的繁荣。但维持漕运需要庞大的河道疏浚、船只修造和人力成本，各种漕规陋习也使纳粮农户和运丁深受其累。清末随着海运开通和铁路兴起，漕运制度在光绪年间最终废止。"
+  },
+  {
+    term: "科差",
+    "explanation": "科差是元代特有的赋税名目，又称「差科」或「差税」，主要征收丝料、包银等实物或货币。元太宗窝阔台时期开始征收丝料，规定每两户出丝一斤输于官府（系官丝），每五户出丝一斤输于封君（五户丝）；元宪宗蒙哥时期又加征包银，每户纳银四两，后减为二两并许以实物折纳。科差按户等而非地亩征收，以北方汉民为主要征发对象，是元代在北方地区最重要的赋税形式之一，反映了蒙古统治者对中原地区的社会经济管理模式。"
+  },
+  {
+    term: "明末三饷",
+    "explanation": "明末三饷是指明朝万历末至崇祯年间为应对辽东战事和农民起义而三次大规模加征的赋税。万历四十六年（1618年）因后金攻陷抚顺而始征「辽饷」，每亩加银三厘五毫，此后多次递增；崇祯十年（1637年）为镇压农民军加征「剿饷」；崇祯十二年（1639年）为训练新军而加征「练饷」。三饷合计每亩加征白银约一分二厘，总额高达两千余万两，远超正赋。三饷的沉重负担使本就困苦的农民雪上加霜，大量自耕农破产逃亡，是引爆明末农民大起义和加速明朝灭亡的重要经济原因。"
+  }
+];
+
+</script>
+<script>
+(function() {
+  // ── Data ──
+  var STORAGE_KEY = 'history_terms_user';
+  var userTerms = [];
+  try { userTerms = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { userTerms = []; }
+  var termsDB = builtinTerms.concat(userTerms);
+
+  function rebuildDB() {
+    try { userTerms = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { userTerms = []; }
+    termsDB = builtinTerms.concat(userTerms);
+  }
+
+  // ── DOM refs ──
+  var card = document.getElementById('card');
+  var welcomePanel = document.getElementById('welcomePanel');
+  var reviewPanel = document.getElementById('reviewPanel');
+  var completePanel = document.getElementById('completePanel');
+  var termEl = document.getElementById('termEl');
+  var explanationEl = document.getElementById('explanationEl');
+  var explanationWrapper = document.getElementById('explanationWrapper');
+  var revealHint = document.getElementById('revealHint');
+  var progressBar = document.getElementById('progressBar');
+  var progressText = document.getElementById('progressText');
+  var controls = document.getElementById('controls');
+  var shortcuts = document.getElementById('shortcuts');
+  var btnStart = document.getElementById('btnStart');
+  var btnReveal = document.getElementById('btnReveal');
+  var btnNext = document.getElementById('btnNext');
+  var btnPrev = document.getElementById('btnPrev');
+  var btnReset = document.getElementById('btnReset');
+  var btnReset2 = document.getElementById('btnReset2');
+  var countInfo = document.getElementById('countInfo');
+  var completeText = document.getElementById('completeText');
+
+  // ── Modal DOM refs ──
+  var modalOverlay = document.getElementById('modalOverlay');
+  var modalClose = document.getElementById('modalClose');
+  var inputTerm = document.getElementById('inputTerm');
+  var inputExplanation = document.getElementById('inputExplanation');
+  var formMsg = document.getElementById('formMsg');
+  var termList = document.getElementById('termList');
+  var userTermBadge = document.getElementById('userTermBadge');
+  var importFile = document.getElementById('importFile');
+
+  // ── Empty database check ──
+  function updateCountInfo() {
+    if (termsDB.length === 0) {
+      btnStart.disabled = true;
+      btnStart.textContent = '请先导入词库';
+      countInfo.textContent = '词库为空 — 点击上方「管理词库」→「从文件导入」加载 JSON 文件';
+      countInfo.style.color = '#c44';
+    } else {
+      btnStart.disabled = false;
+      btnStart.textContent = '开始复习';
+      countInfo.style.color = '';
+      countInfo.textContent = '内置 ' + builtinTerms.length + ' 个 + 自定义 ' + userTerms.length + ' 个，共 ' + termsDB.length + ' 个';
+    }
+  }
+  updateCountInfo();
+
+  // ── State ──
+  var shuffled = [];
+  var position = -1;   // -1 = welcome, 0..N-1 = reviewing
+  var revealed = false;
+  // ── Init ──
+  btnReveal.disabled = true;
+  btnNext.disabled = true;
+  btnPrev.disabled = true;
+
+  // ── Fisher-Yates shuffle ──
+  function shuffle() {
+    shuffled = [];
+    for (var i = 0; i < termsDB.length; i++) { shuffled.push(i); }
+    for (var i2 = shuffled.length - 1; i2 > 0; i2--) {
+      var j = Math.floor(Math.random() * (i2 + 1));
+      var tmp = shuffled[i2];
+      shuffled[i2] = shuffled[j];
+      shuffled[j] = tmp;
+    }
+  }
+
+  // ── Show term at current position ──
+  function showTerm() {
+    var idx = shuffled[position];
+    var entry = termsDB[idx];
+
+    // Fade transition
+    termEl.classList.add('fading');
+    setTimeout(function() {
+      termEl.textContent = entry.term;
+      termEl.classList.remove('fading');
+    }, 150);
+
+    explanationEl.textContent = entry.explanation;
+    collapseExplanation();
+    revealed = false;
+    updateUI();
+  }
+
+  function collapseExplanation() {
+    explanationWrapper.classList.remove('open');
+  }
+
+  function expandExplanation() {
+    explanationWrapper.classList.add('open');
+  }
+
+  // ── Toggle reveal ──
+  function toggleReveal() {
+    if (position < 0) return;
+    revealed = !revealed;
+    if (revealed) {
+      expandExplanation();
+      revealHint.textContent = '点击卡片或按空格键收起答案';
+    } else {
+      collapseExplanation();
+      revealHint.textContent = '点击卡片或按空格键显示答案';
+    }
+    btnReveal.textContent = revealed ? '收起答案' : '显示答案';
+    btnReveal.classList.toggle('btn-outline', revealed);
+    btnReveal.classList.toggle('btn-primary', !revealed);
+  }
+
+  // ── Start ──
+  function start() {
+    shuffle();
+    position = 0;
+    revealed = false;
+
+    welcomePanel.style.display = 'none';
+    completePanel.classList.remove('active');
+    completePanel.style.display = 'none';
+    reviewPanel.style.display = 'flex';
+    reviewPanel.classList.add('active');
+    card.classList.add('reviewing', 'clickable');
+    controls.style.display = 'flex';
+    btnReset.style.display = 'inline-flex';
+    shortcuts.classList.add('visible');
+
+    var entry = termsDB[shuffled[0]];
+    termEl.textContent = entry.term;
+    explanationEl.textContent = entry.explanation;
+    collapseExplanation();
+    revealHint.textContent = '点击卡片或按空格键显示答案';
+    btnReveal.textContent = '显示答案';
+    btnReveal.classList.remove('btn-outline');
+    btnReveal.classList.add('btn-primary');
+    btnReveal.disabled = false;
+    btnNext.disabled = false;
+    btnPrev.disabled = true;
+
+    updateUI();
+  }
+
+  // ── Next ──
+  function next() {
+    if (position >= termsDB.length - 1) {
+      showComplete();
+      return;
+    }
+    position++;
+    showTerm();
+  }
+
+  // ── Prev ──
+  function prev() {
+    if (position <= 0) return;
+    position--;
+    showTerm();
+  }
+
+  // ── Complete ──
+  function showComplete() {
+    reviewPanel.classList.remove('active');
+    reviewPanel.style.display = 'none';
+    completePanel.style.display = 'flex';
+    completePanel.classList.add('active');
+    completeText.textContent = '已全部完成 ' + termsDB.length + ' 个名词的复习，继续保持！';
+    card.classList.remove('clickable');
+    card.classList.add('reviewing');
+    controls.style.display = 'none';
+    btnReset.style.display = 'none';
+    progressText.textContent = '';
+    progressBar.style.width = '100%';
+  }
+
+  // ── Reset ──
+  function reset() {
+    shuffle();
+    position = 0;
+    revealed = false;
+
+    completePanel.classList.remove('active');
+    completePanel.style.display = 'none';
+    reviewPanel.classList.add('active');
+    reviewPanel.style.display = 'flex';
+    card.classList.add('reviewing', 'clickable');
+    controls.style.display = 'flex';
+    btnReset.style.display = 'inline-flex';
+
+    var entry = termsDB[shuffled[0]];
+    termEl.textContent = entry.term;
+    explanationEl.textContent = entry.explanation;
+    collapseExplanation();
+    revealHint.textContent = '点击卡片或按空格键显示答案';
+    btnReveal.textContent = '显示答案';
+    btnReveal.classList.remove('btn-outline');
+    btnReveal.classList.add('btn-primary');
+    btnReveal.disabled = false;
+    btnNext.disabled = false;
+    btnPrev.disabled = true;
+
+    updateUI();
+  }
+
+  // ── Update UI (progress, buttons) ──
+  function updateUI() {
+    var pct = termsDB.length > 0 ? Math.round((position + 1) / termsDB.length * 100) : 0;
+    progressBar.style.width = pct + '%';
+    progressText.textContent = '已复习 ' + (position + 1) + ' / ' + termsDB.length;
+
+    btnPrev.disabled = position <= 0;
+    // Next button is always enabled until complete (handled in next())
+    btnNext.disabled = false;
+  }
+
+  // ── Event listeners ──
+  btnStart.addEventListener('click', start);
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+  btnReset.addEventListener('click', reset);
+  btnReset2.addEventListener('click', reset);
+
+  btnReveal.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleReveal();
+  });
+
+  card.addEventListener('click', function() {
+    if (position < 0) { start(); return; }
+    if (completePanel.classList.contains('active')) return;
+    if (!revealed) { toggleReveal(); }
+    else { next(); }
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if (modalOverlay.classList.contains('open')) return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    if (e.key === ' ' || e.code === 'Space') {
+      e.preventDefault();
+      if (position < 0) { start(); return; }
+      if (completePanel.classList.contains('active')) { reset(); return; }
+      if (!revealed) { toggleReveal(); }
+      else { next(); }
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (position < 0) { start(); return; }
+      if (completePanel.classList.contains('active')) { reset(); return; }
+      next();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (position < 0) return;
+      if (completePanel.classList.contains('active')) return;
+      prev();
+    } else if (e.key === 'Escape') {
+      closeModal();
+    }
+  });
+
+  // ── Modal & term management ──
+
+  function saveUserTerms() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(userTerms));
+  }
+
+  function openModal() {
+    modalOverlay.style.display = 'flex';
+    modalOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    renderUserTerms();
+    inputTerm.focus();
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+    modalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    inputTerm.value = '';
+    inputExplanation.value = '';
+    formMsg.textContent = '';
+    formMsg.className = 'form-msg';
+  }
+
+  function renderUserTerms() {
+    rebuildDB();
+    userTermBadge.textContent = userTerms.length;
+    updateCountInfo();
+
+    if (userTerms.length === 0) {
+      termList.innerHTML = '<p class="empty-hint">暂无自定义名词，在上方添加或从文件导入。</p>';
+    } else {
+      var html = '';
+      for (var i = 0; i < userTerms.length; i++) {
+        var t = userTerms[i];
+        var preview = t.explanation.length > 30 ? t.explanation.slice(0, 30) + '…' : t.explanation;
+        html += '<div class="term-item">' +
+          '<span class="term-name">' + escHTML(t.term) + '</span>' +
+          '<span class="term-preview">' + escHTML(preview) + '</span>' +
+          '<button class="btn-del" data-index="' + i + '" title="删除">×</button>' +
+        '</div>';
+      }
+      termList.innerHTML = html;
+
+      var delBtns = termList.querySelectorAll('.btn-del');
+      for (var d = 0; d < delBtns.length; d++) {
+        delBtns[d].addEventListener('click', function() {
+          deleteTerm(parseInt(this.getAttribute('data-index')));
+        });
+      }
+    }
+  }
+
+  function escHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function addTerm() {
+    var term = inputTerm.value.trim();
+    var explanation = inputExplanation.value.trim();
+    if (!term) { formMsg.textContent = '请输入名词名称'; formMsg.className = 'form-msg error'; return; }
+    if (!explanation) { formMsg.textContent = '请输入解释内容'; formMsg.className = 'form-msg error'; return; }
+
+    userTerms.push({ term: term, explanation: explanation });
+    saveUserTerms();
+    rebuildDB();
+
+    inputTerm.value = '';
+    inputExplanation.value = '';
+    formMsg.textContent = '「' + term + '」已添加到词库！';
+    formMsg.className = 'form-msg success';
+    updateCountInfo();
+    renderUserTerms();
+    inputTerm.focus();
+
+    setTimeout(function() { formMsg.textContent = ''; formMsg.className = 'form-msg'; }, 2000);
+  }
+
+  function deleteTerm(index) {
+    var name = userTerms[index].term;
+    userTerms.splice(index, 1);
+    saveUserTerms();
+    rebuildDB();
+    updateCountInfo();
+    renderUserTerms();
+
+    formMsg.textContent = '已删除「' + name + '」';
+    formMsg.className = 'form-msg success';
+    setTimeout(function() { formMsg.textContent = ''; formMsg.className = 'form-msg'; }, 2000);
+  }
+
+  function exportAll() {
+    var all = builtinTerms.concat(userTerms);
+    var blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '历史名词解释_' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importTerms() {
+    var file = importFile.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var text = e.target.result;
+        // Strip BOM if present
+        if (text.charCodeAt(0) === 0xFEFF) { text = text.slice(1); }
+        var data = JSON.parse(text);
+        if (!Array.isArray(data)) throw new Error('数据不是数组格式');
+        var added = 0;
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].term && data[i].explanation) {
+            userTerms.push({ term: data[i].term, explanation: data[i].explanation });
+            added++;
+          }
+        }
+        if (added === 0) { formMsg.textContent = '未找到有效名词数据（需包含 term 和 explanation 字段）'; formMsg.className = 'form-msg error'; return; }
+        saveUserTerms();
+        rebuildDB();
+        updateCountInfo();
+        renderUserTerms();
+        formMsg.textContent = '成功导入 ' + added + ' 个名词！';
+        formMsg.className = 'form-msg success';
+        setTimeout(function() { formMsg.textContent = ''; formMsg.className = 'form-msg'; }, 3000);
+      } catch (err) {
+        console.error('导入失败:', err);
+        formMsg.textContent = '文件格式错误：' + err.message + '。请确保导入的是有效的 JSON 文件。';
+        formMsg.className = 'form-msg error';
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+    importFile.value = '';
+  }
+
+  function clearUserTerms() {
+    if (userTerms.length === 0) return;
+    if (!confirm('确定要清空所有 ' + userTerms.length + ' 个自定义名词吗？此操作不可恢复。')) return;
+    userTerms = [];
+    saveUserTerms();
+    rebuildDB();
+    updateCountInfo();
+    renderUserTerms();
+    formMsg.textContent = '已清空所有自定义名词';
+    formMsg.className = 'form-msg success';
+    setTimeout(function() { formMsg.textContent = ''; formMsg.className = 'form-msg'; }, 2000);
+  }
+
+  // ── Modal event listeners ──
+  document.getElementById('btnOpenManage').addEventListener('click', openModal);
+  modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) closeModal(); });
+  document.getElementById('btnAddTerm').addEventListener('click', addTerm);
+  inputTerm.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addTerm(); } });
+  inputExplanation.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); addTerm(); }
+  });
+  document.getElementById('btnExport').addEventListener('click', exportAll);
+  document.getElementById('btnImport').addEventListener('click', function() { importFile.click(); });
+  importFile.addEventListener('change', importTerms);
+  document.getElementById('btnClearUser').addEventListener('click', clearUserTerms);
+
+  // ── After term changes, reset review state ──
+  var originalStart = start;
+  start = function() {
+    rebuildDB();
+    originalStart();
+  };
+  var originalReset = reset;
+  reset = function() {
+    rebuildDB();
+    originalReset();
+  };
+
+})();
+</script>
+</body>
+</html>
