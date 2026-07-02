@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(python *)",
+      "Bash(xxd \"D:/HISTORIA/mingcijieshiweb/中国古代土地赋税徭役制度.json\")",
+      "Bash(node *)",
+      "Bash(xxd)",
+      "Bash(git --version)",
+      "Bash(npx --version)",
+      "Bash(gh --version)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git config *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://bingjhin.github.io/bingjhin-github-io/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://bingjhin.github.io/bingjhin-github-io/index.html\")",
+      "Bash(curl -s \"https://api.github.com/repos/Bingjhin/bingjhin-github-io/contents/\")",
+      "Bash(curl *)"
+    ]
+  }
+}

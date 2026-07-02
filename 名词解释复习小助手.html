@@ -467,7 +467,7 @@
       <div class="term-label">名词解释</div>
       <div class="term-text" id="termEl"></div>
       <div class="explanation-wrapper" id="explanationWrapper">
-        <div class="explanation-text" id="explanationEl"></div>
+        <div class="explanation-text" id="explanationEl" style="display:none"></div>
       </div>
       <div class="reveal-hint" id="revealHint">点击卡片或按空格键显示答案</div>
     </div>
@@ -757,9 +757,11 @@ var builtinTerms = [
 
   function collapseExplanation() {
     explanationWrapper.classList.remove('open');
+    explanationEl.style.display = 'none';
   }
 
   function expandExplanation() {
+    explanationEl.style.display = '';
     explanationWrapper.classList.add('open');
   }
 
